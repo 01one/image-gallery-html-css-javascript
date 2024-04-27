@@ -1,0 +1,140 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Gallery</title>
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+
+  .image-wrapper {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .zoomable {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    cursor: pointer;
+  }
+
+  .full-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .full-image img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .prev-button {
+    left: 10px;
+  }
+
+  .next-button {
+    right: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="gallery">
+  <div class="image-wrapper">
+    <img src="images/autumn.jpg" alt="Autumn Waterfall" class="zoomable">
+  </div>
+  <div class="image-wrapper">
+    <img src="images/butterfly.jpg" alt="Butterfly Waterfall" class="zoomable">
+  </div>
+  <div class="image-wrapper">
+    <img src="images/horizon.jpg" alt="Horizon Waterfall" class="zoomable">
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const zoomableImages = document.querySelectorAll('.zoomable');
+    let currentIndex = 0;
+
+    zoomableImages.forEach(function (image, index) {
+      image.addEventListener('click', function () {
+        currentIndex = index;
+        showFullImage(currentIndex);
+      });
+    });
+
+    function showFullImage(index) {
+      const fullImageContainer = document.createElement('div');
+      fullImageContainer.classList.add('full-image');
+
+      const fullImage = document.createElement('img');
+      fullImage.src = zoomableImages[index].src;
+
+      const closeButton = document.createElement('span');
+      closeButton.classList.add('close-button');
+      closeButton.innerHTML = '&times;';
+      closeButton.addEventListener('click', function () {
+        document.body.removeChild(fullImageContainer);
+      });
+
+      const prevButton = document.createElement('span');
+      prevButton.classList.add('nav-button', 'prev-button');
+      prevButton.innerHTML = '&#10094;';
+      prevButton.addEventListener('click', function () {
+        currentIndex = (currentIndex - 1 + zoomableImages.length) % zoomableImages.length;
+        fullImage.src = zoomableImages[currentIndex].src;
+      });
+
+      const nextButton = document.createElement('span');
+      nextButton.classList.add('nav-button', 'next-button');
+      nextButton.innerHTML = '&#10095;';
+      nextButton.addEventListener('click', function () {
+        currentIndex = (currentIndex + 1) % zoomableImages.length;
+        fullImage.src = zoomableImages[currentIndex].src;
+      });
+
+      fullImageContainer.appendChild(fullImage);
+      fullImageContainer.appendChild(closeButton);
+      fullImageContainer.appendChild(prevButton);
+      fullImageContainer.appendChild(nextButton);
+      document.body.appendChild(fullImageContainer);
+    }
+  });
+</script>
+
+</body>
+</html>
+
+
+
